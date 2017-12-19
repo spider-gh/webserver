@@ -49,6 +49,13 @@
 
    - name: clean html directory
      shell: rm -f /usr/share/nginx/html/*
+   
+   - name: change permission
+     file:
+       path: /usr/share/nginx/html
+       owner: ec2-user
+       group: nginx
+       mode: 0755
      
    - name: start services
      service:
