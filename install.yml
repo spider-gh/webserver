@@ -1,0 +1,63 @@
+---
+ - hosts: all
+   become: true
+   become_user: root
+   become_method: sudo
+   tasks:
+
+   - name: Enable repo
+     shell: yum-config-manager --enable epel
+
+   - name: Upgrade
+     yum: name=* state=latest update_cache=yes
+
+   - name: install php
+     yum:
+       name: "{{ item }}"
+       state: present
+       update_cache: yes
+     with_items:
+        - "php56-fpm"
+        - "php56-cli"
+        - "php56-common"
+        - "php56-process"
+        - "php56-xml"
+
+   - name: install php ext and add soft
+     yum:
+       name: "{{ item }}"
+       state: present
+       update_cache: yes
+     with_items:
+        - "php56-mbstring"
+        - "php56-mysqlnd"
+        - "php56-gd"
+        - "php56-opcache"
+        - "php56-pecl-apc"
+        - "php56-pdo"
+        - "php56-pecl-imagick"
+        - "php56-process"
+        - "php56-devel"
+        - "php-zip"
+        - "php56-jsonc"
+        - "nginx"
+        - "git"
+        - "mc"
+        - "curl"
+        - "curl-devel"
+        - "mysql-server"
+
+   - name: change index page
+     shell: echo "<?php phpinfo();?>" > /usr/share/nginx/html/phpinfo.php
+     ignore_errors: true
+
+   - name: start services
+     service:
+        name: "{{ item }}"
+        state: restarted
+     with_items:
+        - "nginx"
+        - "php-fpm"
+        - "mysqld"
+
+
