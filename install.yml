@@ -47,10 +47,9 @@
         - "curl-devel"
         - "mysql-server"
 
-   - name: change index page
-     shell: echo "<?php phpinfo();?>" > /usr/share/nginx/html/phpinfo.php
-     ignore_errors: true
-
+   - name: cleanhtml directory
+     shell: rm -f /usr/share/nginx/html/*
+     
    - name: start services
      service:
         name: "{{ item }}"
